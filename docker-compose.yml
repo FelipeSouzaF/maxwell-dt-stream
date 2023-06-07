@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  database:
+    container_name: "database"
+    command:
+      - --table_definition_cache=2048
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb-buffer-pool-size=3G
+      - --binlog-format=ROW
+      - --log-bin=master
+    image: mariadb:10.6.13
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ../.data/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - dt-strem-net
+
+  maxwell:
+    container_name: "maxwell"
+    image: zendesk/maxwell:latest
+    tty: true
+    stdin_open: true
+    command: |-
+      bin/maxwell
+        --user=${MYSQL_ROOT_USER}
+        --password=${MYSQL_ROOT_PASSWORD}
+        --host=${MYSQL_HOST}
+        --producer=sqs
+        --sqs_signing_region=${AWS_REGION}
+        --sqs_service_endpoint=${AWS_SQS_ENDPOINT}
+        --sqs_queue_uri=${AWS_SQS_URL}
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+    networks:
+      - dt-strem-net
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      - PMA_HOST=${MYSQL_HOST}
+    ports:
+      - 8100:80
+    networks:
+      - dt-strem-net
+
+networks:
+  dt-strem-net:
+    driver: bridge
