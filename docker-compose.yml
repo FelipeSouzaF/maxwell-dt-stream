@@ -52,10 +52,11 @@ services:
         --user=${MYSQL_ROOT_USER}
         --password=${MYSQL_ROOT_PASSWORD}
         --host=${MYSQL_HOST}
-        --producer=sqs
-        --sqs_signing_region=${AWS_REGION}
-        --sqs_service_endpoint=${AWS_SQS_ENDPOINT}
-        --sqs_queue_uri=${AWS_SQS_URL}
+        --producer=stdout
+    # --producer=sqs
+    # --sqs_signing_region=${AWS_REGION}
+    # --sqs_service_endpoint=${AWS_SQS_ENDPOINT}
+    # --sqs_queue_uri=${AWS_SQS_URL}
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
