@@ -21,6 +21,17 @@ services:
     networks:
       - dt-strem-net
 
+  alpine-sqs:
+    container_name: alpine-sqs
+    image: roribio16/alpine-sqs:latest
+    volumes:
+      - ../.data/alpine-sqs:/opt/custom
+    ports:
+      - 9324:9324
+      - 9325:9325
+    networks:
+      - dt-strem-net
+
   maxwell:
     container_name: "maxwell"
     image: zendesk/maxwell:latest
