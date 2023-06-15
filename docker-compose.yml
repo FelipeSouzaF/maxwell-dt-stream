@@ -21,6 +21,30 @@ services:
     networks:
       - dt-strem-net
 
+  dynamodb:
+    image:  amazon/dynamodb-local:1.22.0
+    container_name: dynamodb
+    restart: always
+    command: ["-jar", "DynamoDBLocal.jar", "-inMemory", "-sharedDb"]
+    ports:
+      - 8000:8000
+    networks:
+      - dt-strem-net
+
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin:4.5.1
+    container_name: dynamodb-admin
+    environment:
+      - DYNAMO_ENDPOINT=dynamodb:8000
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+    restart: always
+    ports:
+      - 8001:8001
+    networks:
+      - dt-strem-net
+
   alpine-sqs:
     container_name: alpine-sqs
     image: roribio16/alpine-sqs:latest
