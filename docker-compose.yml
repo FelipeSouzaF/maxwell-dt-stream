@@ -32,16 +32,6 @@ services:
     networks:
       - dt-strem-net
 
-  lambda:
-    container_name: lambda
-    build:
-      context: ./lambda/
-      dockerfile: Dockerfile
-    volumes:
-      - ./lambda/app.js:/function/app.js
-    ports:
-      - 9000:8080
-
   maxwell:
     container_name: "maxwell"
     image: zendesk/maxwell:latest
