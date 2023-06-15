@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "nodemon": "^2.0.22",
+    "sqs-consumer": "^5.8.0"
+  }
+}
