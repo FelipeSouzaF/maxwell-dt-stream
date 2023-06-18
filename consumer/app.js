@@ -14,14 +14,26 @@ const app = Consumer.create({
     });
     const docClient = new AWS.DynamoDB.DocumentClient({service: dynamodb});
 
+    const {
+      database,
+      table,
+      type,
+      data = {},
+      old = {}
+    } = JSON.parse(message.Body)
+
     const params = {
-      TableName: 'pedidos',
+      TableName: 'logs',
       Item: {
         'id': uuidv4(),
-        'json_value': JSON.stringify(message),
+        'database': database,
+        'table': table,
+        'operation': type,
+        'current_data': JSON.stringify(data),
+        'old_data': JSON.stringify(old),
       },
     };
-    
+
     docClient.put(params, function(err, data) {
       if (err) {
         console.log("Error", err);
