@@ -78,6 +78,27 @@ services:
     networks:
       - dt-strem-net
 
+  redis:
+    container_name: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    image: redis:7.0.12
+    volumes:
+      - ../.data/.redis:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - dt-strem-net
+
+  n8n:
+    container_name: n8n
+    image: docker.n8n.io/n8nio/n8n
+    volumes:
+      - ../.data/.n8n:/home/node/.n8n
+    ports:
+      - 5678:5678
+    networks:
+      - dt-strem-net
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
