@@ -24,7 +24,13 @@ services:
   maxwell:
     container_name: "maxwell"
     image: zendesk/maxwell:latest
-    command: bin/maxwell --user=${MYSQL_ROOT_USER} --password=${MYSQL_ROOT_PASSWORD} --host=${MYSQL_HOST} --producer=stdout
+    command: |
+      bin/maxwell
+        --user=${MYSQL_ROOT_USER}
+        --password=${MYSQL_ROOT_PASSWORD}
+        --host=${MYSQL_HOST}
+        --producer=redis
+        --redis_host=redis
     depends_on:
       - database
     networks:
@@ -50,6 +56,20 @@ services:
       - 8100:80
     depends_on:
       - database
+    networks:
+      - dt-stream-net
+
+  redisinsight:
+    container_name: redisinsight
+    image: redis/redisinsight:latest
+    environment:
+      - RI_REDIS_HOST=redis
+    # volumes:
+    #   - ../.data/.redisinsight:/data
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
     networks:
       - dt-stream-net
 
