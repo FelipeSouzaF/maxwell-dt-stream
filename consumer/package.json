@@ -1,9 +1,14 @@
 {
   "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
   "dependencies": {
-    "aws-sdk": "^2.1397.0",
-    "nodemon": "^2.0.22",
-    "sqs-consumer": "^5.8.0",
+    "redis": "^4.6.0",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
   }
 }

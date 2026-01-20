@@ -19,64 +19,16 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - dt-strem-net
-
-  dynamodb:
-    image:  amazon/dynamodb-local:1.22.0
-    container_name: dynamodb
-    restart: always
-    command: ["-jar", "DynamoDBLocal.jar", "-inMemory", "-sharedDb"]
-    ports:
-      - 8000:8000
-    networks:
-      - dt-strem-net
-
-  dynamodb-admin:
-    image: aaronshaf/dynamodb-admin:4.5.1
-    container_name: dynamodb-admin
-    environment:
-      - DYNAMO_ENDPOINT=dynamodb:8000
-      - AWS_REGION=us-east-1
-      - AWS_ACCESS_KEY_ID=local
-      - AWS_SECRET_ACCESS_KEY=local
-    restart: always
-    ports:
-      - 8001:8001
-    networks:
-      - dt-strem-net
-
-  alpine-sqs:
-    container_name: alpine-sqs
-    image: roribio16/alpine-sqs:latest
-    volumes:
-      - ../.data/alpine-sqs:/opt/custom
-    ports:
-      - 9324:9324
-      - 9325:9325
-    networks:
-      - dt-strem-net
+      - dt-stream-net
 
   maxwell:
     container_name: "maxwell"
     image: zendesk/maxwell:latest
-    tty: true
-    stdin_open: true
-    command: |-
-      bin/maxwell
-        --user=${MYSQL_ROOT_USER}
-        --password=${MYSQL_ROOT_PASSWORD}
-        --host=${MYSQL_HOST}
-        --producer=stdout
-    # --producer=sqs
-    # --sqs_signing_region=${AWS_REGION}
-    # --sqs_service_endpoint=${AWS_SQS_ENDPOINT}
-    # --sqs_queue_uri=${AWS_SQS_URL}
-    environment:
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+    command: bin/maxwell --user=${MYSQL_ROOT_USER} --password=${MYSQL_ROOT_PASSWORD} --host=${MYSQL_HOST} --producer=stdout
+    depends_on:
+      - database
     networks:
-      - dt-strem-net
+      - dt-stream-net
 
   redis:
     container_name: redis
@@ -87,17 +39,7 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - dt-strem-net
-
-  n8n:
-    container_name: n8n
-    image: docker.n8n.io/n8nio/n8n
-    volumes:
-      - ../.data/.n8n:/home/node/.n8n
-    ports:
-      - 5678:5678
-    networks:
-      - dt-strem-net
+      - dt-stream-net
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -106,9 +48,11 @@ services:
       - PMA_HOST=${MYSQL_HOST}
     ports:
       - 8100:80
+    depends_on:
+      - database
     networks:
-      - dt-strem-net
+      - dt-stream-net
 
 networks:
-  dt-strem-net:
+  dt-stream-net:
     driver: bridge
