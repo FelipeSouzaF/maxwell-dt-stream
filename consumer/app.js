@@ -10,7 +10,7 @@ const mysqlConfig = {
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_ROOT_USER,
   password: process.env.MYSQL_ROOT_PASSWORD,
-  database: process.env.MYSQL_DB,
+  database: process.env.MYSQL_LOGS_DB,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
