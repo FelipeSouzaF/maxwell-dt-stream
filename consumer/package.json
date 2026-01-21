@@ -5,6 +5,8 @@
     "dev": "nodemon app.js"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
+    "mysql2": "^3.6.0",
     "redis": "^4.6.0",
     "uuid": "^9.0.0"
   },
