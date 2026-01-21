@@ -29,6 +29,7 @@ services:
         --host=${MYSQL_HOST}
         --producer=redis
         --redis_host=redis
+        --filter='exclude: *.*, include: tenant.*'
     depends_on:
       - database
     networks:
